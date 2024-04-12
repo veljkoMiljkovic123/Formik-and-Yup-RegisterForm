@@ -2,10 +2,15 @@ import React from 'react'
 import { useFormik } from 'formik'
 import { FileParser } from '../utils/FileParser';
 import * as Yup from 'yup'
+import {useDispatch} from 'react-redux'
+import { loggedUserAction } from '../store/userSlice';
+import {useNavigate} from 'react-router-dom'
 function FormComponent() {
 
-    //Validacija image
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
+    //Validacija image
     //type
     const VALID_TYPE = ['image/png','image/jpg', 'image/jpeg']
 
@@ -40,10 +45,10 @@ function FormComponent() {
         }),
         //3.onSubmit
         onSubmit: (values) => {
-            
             FileParser(values.image)
             .then(res=>{
-                console.log({...values,image:res})
+                dispatch(loggedUserAction({...values,image:res}))
+                navigate('/')
             })
             .catch(err=>console.log(err))
             formik.resetForm();
@@ -52,7 +57,7 @@ function FormComponent() {
 
     const showError = (name) => formik.errors[name] && formik.touched[name] && formik.errors[name]
 
-  return <form onSubmit={formik.handleSubmit} className='bg-slate-300 p-[20px] rounded-lg mt-5 flex flex-col gap-3 w-[500px]'>
+  return <form onSubmit={formik.handleSubmit} className='bg-slate-300 p-[20px] rounded-lg mt-5 flex flex-col gap-3 w-full md:w-[500px] mx-auto md:mx-auto'>
     {/* firstName */}
     <div className='flex flex-col'>
         <label htmlFor="firstname" className='text-[14px] text-gray-600 '>FirstName
